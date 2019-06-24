@@ -1,13 +1,13 @@
 {
-  "name": "easy-packager",
+  "name": "agile-3",
   "version": "1.0.0",
-  "description": "easy packager to combine CSS and JS files into a production ready codebase",
+  "description": "Agile 3's codebase",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nathan Noye",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "gulp": "^4.0.2"
   },
