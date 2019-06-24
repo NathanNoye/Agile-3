@@ -60,9 +60,9 @@ Agile.observable = {
                     }
                 });
                 el.removeAttribute('data-bind');
-                rootEl.removeAttribute('data-props');
             })
         });
+        rootEl.removeAttribute('data-props');
     },
     text: function (element) {
         var self = this;
