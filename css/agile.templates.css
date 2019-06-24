@@ -1,0 +1,45 @@
+/*CLEAN FONT SECTION*/
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab');
+
+.template-clean{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.template-clean h1, .template-clean h2, .template-clean h3, .template-clean h4, .template-clean h5, .template-clean h6{
+    font-family: 'Roboto Slab', serif;
+    font-weight: 100;
+    color: var(--color-primary);
+}
+
+.template-clean p {
+    color: var(--color-secondary);
+}
+
+.template-clean a {
+    color: var(--color-accent);
+}
+
+
+
+
+
+/*ALWAYS NEEDS TO BE LAST*/
+[class*="template-"] hr{
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid var(--color-accent-secondary);
+    margin: 1em 0;
+    padding: 0; 
+}
+
+[class*="template-"] *::selection{
+    color: #fff;
+    background-color: var(--color-accent);
+}
+
+[class*="template-"] input:focus, [class*="template-"] textarea:focus, [class*="template-"] button:focus {
+    outline: none !important;
+    box-shadow: 0 0 1px 1px var(--color-accent);
+}
