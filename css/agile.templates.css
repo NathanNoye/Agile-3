@@ -7,7 +7,7 @@
 }
 
 .template-clean h1, .template-clean h2, .template-clean h3, .template-clean h4, .template-clean h5, .template-clean h6{
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Roboto Slab', sans-serif;
     font-weight: 100;
     color: var(--color-primary);
 }
@@ -16,9 +16,10 @@
     color: var(--color-secondary);
 }
 
-.template-clean a {
+.template-clean a:hover, .template-clean footer a {
     color: var(--color-accent);
 }
+
 
 
 
