@@ -21,7 +21,7 @@ Agile.components.NavBar.prototype.render = function() {
     })
 
     self.root.innerHTML += `
-        <div class="nav-ham" data-bind="click: hbMenu">☰</div>
+        <div class="nav-ham color-accent" data-bind="click: hbMenu">☰</div>
         <nav class="nav-standard flat-shadow-around-large slide">
             ${links}
         </nav>
