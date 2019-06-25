@@ -2,6 +2,7 @@ var Agile = {} || Agile;
 Agile.core = {} || Agile.core;
 Agile.components = {} || Agile.components;
 Agile.observable = {} || Agile.observable;
+Agile.fx = {} || Agile.fx;
 
 Agile.core = {
     /**
