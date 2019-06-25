@@ -34,7 +34,7 @@
     * The prototype functions are shared by each of the components but use the 'regular' functions to reference the local scope. 
     * This strategy saves memory and load times
     * */
-Agile.observable = {
+   Agile.observable = {
     /**
         * @param {rootEl} Root HTML element
         * @param {vm} View Model you're attaching to
@@ -62,6 +62,7 @@ Agile.observable = {
                 el.removeAttribute('data-bind');
             })
         });
+        rootEl.removeAttribute('data-props');
     },
     text: function (element) {
         var self = this;
