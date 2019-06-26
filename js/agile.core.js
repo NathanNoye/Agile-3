@@ -24,7 +24,7 @@ Agile.core = {
      * @description Checks if the website is being viewed via a PWA in standalone mode
      */
     isPWA: function () {
-        return window.matchMedia('(display-mode: standalone)').matches;
+        return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone);
     },
     /**
      * @description Used to initialize all the components in the Agile.components group
