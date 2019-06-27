@@ -27,7 +27,7 @@ Agile.components.ImageGallery = function (root) {
     self._displayImages();
 
     // Bind the functions
-    Agile.observable.bind(self.root, this)
+    Agile.core.bind(self.root, this)
 }
 
 Agile.components.ImageGallery.prototype.render = function () {

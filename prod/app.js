@@ -2,8 +2,40 @@ var Agile = {} || Agile;
 Agile.core = {} || Agile.core;
 Agile.components = {} || Agile.components;
 Agile.observable = {} || Agile.observable;
+Agile.fx = {} || Agile.fx;
+Agile.emit = {} || Agile.emit;
 
 Agile.core = {
+    VM_LIST: [],
+    /**
+        * @param {rootEl} Root HTML element
+        * @param {vm} View Model you're attaching to
+        */
+       bind: function (rootEl, vm) {
+        [].slice.call(rootEl.querySelectorAll('[data-bind]')).forEach(el => {
+            var events = el.getAttribute('data-bind').split(',');
+            events.forEach(event => {
+                var _eventType = event.split(':')[0].replace(' ', '').toLowerCase();
+                var fn = event.split(':')[1].replace(' ', '').toString();
+                if (_eventType === 'text') {
+                    vm[fn] = new Agile.observable.text(el);
+                }
+                if (_eventType === 'css') {
+                    vm[fn] = new Agile.observable.class(el, fn);
+                }
+                el.addEventListener(_eventType, function (e) {
+                    e.preventDefault();
+                    try {
+                        vm[fn](e, el);
+                    } catch (err) {
+                        console.error(`There's an error with the ${fn} function `, err)
+                    }
+                });
+                el.removeAttribute('data-bind');
+            })
+        });
+        rootEl.removeAttribute('data-props');
+    },
     /**
      * @param {JSON} config.where beforebegin, afterbegin, beforeend, afterend
      * @param {JSON} config.el the element to insert the HTML
@@ -20,11 +52,17 @@ Agile.core = {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     },
     /**
+     * @description Checks if the website is being viewed via a PWA in standalone mode
+     */
+    isPWA: function () {
+        return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone);
+    },
+    /**
      * @description Used to initialize all the components in the Agile.components group
      */
     initializeComponents: function () {
         document.querySelectorAll('[data-component]').forEach(key => {
-            new Agile.components[key.getAttribute('data-component')](key);
+            Agile.core.VM_LIST.push(new Agile.components[key.getAttribute('data-component')](key));
         });
     },
     /**
@@ -106,40 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
     * */
 // UNDER THE HOOD
 /**
-    * Prototype or regular functions?
-    * The 'regular' functions are really just appending private members to your component meaning it's local scopped.
-    * The prototype functions are shared by each of the components but use the 'regular' functions to reference the local scope. 
-    * This strategy saves memory and load times
-    * */
+* Prototype or regular functions?
+* The 'regular' functions are really just appending private members to your component meaning it's local scopped.
+* The prototype functions are shared by each of the components but use the 'regular' functions to reference the local scope. 
+* This strategy saves memory and load times
+* */
 Agile.observable = {
-    /**
-        * @param {rootEl} Root HTML element
-        * @param {vm} View Model you're attaching to
-        */
-    bind: function (rootEl, vm) {
-        [].slice.call(rootEl.querySelectorAll('[data-bind]')).forEach(el => {
-            var events = el.getAttribute('data-bind').split(',');
-            events.forEach(event => {
-                var _eventType = event.split(':')[0].replace(' ', '').toLowerCase();
-                var fn = event.split(':')[1].replace(' ', '').toString();
-                if (_eventType === 'text') {
-                    vm[fn] = new Agile.observable.text(el);
-                }
-                if (_eventType === 'css') {
-                    vm[fn] = new Agile.observable.class(el, fn);
-                }
-                el.addEventListener(_eventType, function (e) {
-                    e.preventDefault();
-                    try {
-                        vm[fn](e, el);
-                    } catch (err) {
-                        console.error(`There's an error with the ${fn} function `, err)
-                    }
-                });
-                el.removeAttribute('data-bind');
-            })
-        });
-    },
     text: function (element) {
         var self = this;
         this.element = element;
@@ -211,7 +221,46 @@ Agile.observable = {
     }
 };
 
-function typingOutput(text, el, speed = 63) {
+Agile.emit = {
+    init: function () {
+        [].slice.call(document.querySelectorAll('[data-props*="emit-send"]')).forEach(emitter => {
+            Agile.emit.emitters.push({
+                element: emitter,
+                function: JSON.parse(emitter.getAttribute('data-props'))["emit-send"]
+            });
+        });
+
+        [].slice.call(document.querySelectorAll('[data-props*="emit-receive"]')).forEach(receiver => {
+            Agile.emit.receivers.push({
+                element: receiver,
+                function: JSON.parse(receiver.getAttribute('data-props'))["emit-receive"]
+            })
+        });
+
+    },
+    emitters: [],
+    receivers: [],
+    /**
+     * @description Executes a function on a specific component with a matching emit-receiver signature. 
+     * STEP 1: Loops through all the VMs looking for a property that contains a matching signature for the emit-receive.
+     * STEP 2: If it's found - the function gets called on the receiver function
+     * @param {function name} signature 
+     * @param {json} data 
+     */
+    call: function (signature, data) {
+
+        Agile.core.VM_LIST.forEach(vm => {
+            if(vm.props["emit-receive"] == signature) {
+                vm[signature](data);
+            }
+        });
+
+    }
+}
+
+
+Agile.emit.init();
+Agile.fx.typing = function(text, el, cb, speed = 63) {
 	var arr = text.split("");
 
 	function typing() {
@@ -220,11 +269,21 @@ function typingOutput(text, el, speed = 63) {
 			setTimeout(() => {
 				typing();
 			}, speed)
-		} 
+		} else {
+			if(cb) {
+				cb();
+			}
+		}
 	}
 	typing();
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    /* HOME PAGE Typing effect */
+    /*Agile.fx.typing("53% Of users leave your website if it takes longer than 3 seconds to load.", document.querySelector("#header-CTA > h1"), function () {
+        console.log('done')
+    })*/
+})
 /**
  * @name ImageGallery
  * @author Nate Noye
@@ -254,7 +313,7 @@ Agile.components.ImageGallery = function (root) {
     self._displayImages();
 
     // Bind the functions
-    Agile.observable.bind(self.root, this)
+    Agile.core.bind(self.root, this)
 }
 
 Agile.components.ImageGallery.prototype.render = function () {
@@ -384,7 +443,7 @@ Agile.components.NavBar = function (root) {
 
     this.navBar = self.root.querySelector('.nav-standard');
 
-    Agile.observable.bind(self.root, this);
+    Agile.core.bind(self.root, this);
 }
 
 Agile.components.NavBar.prototype.render = function() {
@@ -398,7 +457,7 @@ Agile.components.NavBar.prototype.render = function() {
     })
 
     self.root.innerHTML += `
-        <div class="nav-ham" data-bind="click: hbMenu">☰</div>
+        <div class="nav-ham color-accent" data-bind="click: hbMenu">☰</div>
         <nav class="nav-standard flat-shadow-around-large slide">
             ${links}
         </nav>
@@ -413,3 +472,69 @@ Agile.components.NavBar.prototype.hbMenu = function (e, target) {
     var self = this;
     self.navBar.classList.toggle("slide");
 }
+Agile.components.SearchBar = function (root) {
+    var self = this;
+    this.root = root;
+    this.props = JSON.parse(self.root.dataset.props);
+
+    self.render();
+
+    this.input = self.root.querySelector('input');
+    
+    Agile.core.bind(self.root, this);
+}
+
+Agile.components.SearchBar.prototype.render = function() {
+    var self = this;
+
+
+    self.root.innerHTML += `
+        <input type="text">
+        <button data-bind="click: sendData">Send</button>
+    `;
+}
+
+Agile.components.SearchBar.prototype.sendData = function(e, target) {
+    var self = this;
+
+    var data;
+
+    data = {filter: self.input.value}
+    Agile.emit.call("textContent", data)
+}
+Agile.components.Text = function (root) {
+    var self = this;
+    this.root = root;
+    this.props = JSON.parse(self.root.dataset.props);
+
+    self.render();
+    
+    Agile.core.bind(self.root, this);
+
+    self.thisText.set('Hello World');
+}
+
+Agile.components.Text.prototype.render = function() {
+    var self = this;
+
+
+    self.root.innerHTML += `
+        <h1 data-bind="text: thisText"></h1>
+        <button data-bind="click: textContent">test</button>
+    `;
+}
+
+Agile.components.Text.prototype.textContent = function(data) {
+    var self = this;
+    
+    self.thisText.set(data.filter || "fallback text", function () {
+        Agile.emit.call("textChangedEMIT", "Hello from text change")
+    });
+}
+
+Agile.components.Text.prototype.textChangedEMIT = function(data) {
+    var self = this;
+    
+    self.thisText.set(data);
+}
+

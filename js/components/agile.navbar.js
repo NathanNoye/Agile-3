@@ -7,7 +7,7 @@ Agile.components.NavBar = function (root) {
 
     this.navBar = self.root.querySelector('.nav-standard');
 
-    Agile.observable.bind(self.root, this);
+    Agile.core.bind(self.root, this);
 }
 
 Agile.components.NavBar.prototype.render = function() {

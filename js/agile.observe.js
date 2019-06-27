@@ -29,41 +29,12 @@
     * */
 // UNDER THE HOOD
 /**
-    * Prototype or regular functions?
-    * The 'regular' functions are really just appending private members to your component meaning it's local scopped.
-    * The prototype functions are shared by each of the components but use the 'regular' functions to reference the local scope. 
-    * This strategy saves memory and load times
-    * */
-   Agile.observable = {
-    /**
-        * @param {rootEl} Root HTML element
-        * @param {vm} View Model you're attaching to
-        */
-    bind: function (rootEl, vm) {
-        [].slice.call(rootEl.querySelectorAll('[data-bind]')).forEach(el => {
-            var events = el.getAttribute('data-bind').split(',');
-            events.forEach(event => {
-                var _eventType = event.split(':')[0].replace(' ', '').toLowerCase();
-                var fn = event.split(':')[1].replace(' ', '').toString();
-                if (_eventType === 'text') {
-                    vm[fn] = new Agile.observable.text(el);
-                }
-                if (_eventType === 'css') {
-                    vm[fn] = new Agile.observable.class(el, fn);
-                }
-                el.addEventListener(_eventType, function (e) {
-                    e.preventDefault();
-                    try {
-                        vm[fn](e, el);
-                    } catch (err) {
-                        console.error(`There's an error with the ${fn} function `, err)
-                    }
-                });
-                el.removeAttribute('data-bind');
-            })
-        });
-        rootEl.removeAttribute('data-props');
-    },
+* Prototype or regular functions?
+* The 'regular' functions are really just appending private members to your component meaning it's local scopped.
+* The prototype functions are shared by each of the components but use the 'regular' functions to reference the local scope. 
+* This strategy saves memory and load times
+* */
+Agile.observable = {
     text: function (element) {
         var self = this;
         this.element = element;

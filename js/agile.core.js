@@ -3,8 +3,39 @@ Agile.core = {} || Agile.core;
 Agile.components = {} || Agile.components;
 Agile.observable = {} || Agile.observable;
 Agile.fx = {} || Agile.fx;
+Agile.emit = {} || Agile.emit;
 
 Agile.core = {
+    VM_LIST: [],
+    /**
+        * @param {rootEl} Root HTML element
+        * @param {vm} View Model you're attaching to
+        */
+       bind: function (rootEl, vm) {
+        [].slice.call(rootEl.querySelectorAll('[data-bind]')).forEach(el => {
+            var events = el.getAttribute('data-bind').split(',');
+            events.forEach(event => {
+                var _eventType = event.split(':')[0].replace(' ', '').toLowerCase();
+                var fn = event.split(':')[1].replace(' ', '').toString();
+                if (_eventType === 'text') {
+                    vm[fn] = new Agile.observable.text(el);
+                }
+                if (_eventType === 'css') {
+                    vm[fn] = new Agile.observable.class(el, fn);
+                }
+                el.addEventListener(_eventType, function (e) {
+                    e.preventDefault();
+                    try {
+                        vm[fn](e, el);
+                    } catch (err) {
+                        console.error(`There's an error with the ${fn} function `, err)
+                    }
+                });
+                el.removeAttribute('data-bind');
+            })
+        });
+        rootEl.removeAttribute('data-props');
+    },
     /**
      * @param {JSON} config.where beforebegin, afterbegin, beforeend, afterend
      * @param {JSON} config.el the element to insert the HTML
@@ -31,7 +62,7 @@ Agile.core = {
      */
     initializeComponents: function () {
         document.querySelectorAll('[data-component]').forEach(key => {
-            new Agile.components[key.getAttribute('data-component')](key);
+            Agile.core.VM_LIST.push(new Agile.components[key.getAttribute('data-component')](key));
         });
     },
     /**

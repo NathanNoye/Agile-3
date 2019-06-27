@@ -9,5 +9,18 @@
 </head>
 <body class="template-clean">
     <div data-component="NavBar" data-props='{"links": [{"Agile 3": "/"}, {"download": "/download"}, {"github": "https://github.com/NathanNoye/Agile-3"}, {"documentation": "/documentation"}, {"dev blog": "blog"}]}'></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div data-component="SearchBar" data-props='{"emit-send": "textContent", "name": "test"}'></div>
+    <hr>
+    <div data-component="Text" data-props='{"emit-receive": "textContent", "emit-send": "textChanged"}'></div>
+    <div data-component="Text" data-props='{"emit-receive": "textChangedEMIT"}'>
+        <hr>
+        <p>Something diferent</p>
+    </div>
+    <div data-component="Text" data-props='{"":""}'></div>
+    <div data-component="Text" data-props='{"emit-receive": "textContent"}'></div>
 </body>
 </html>
