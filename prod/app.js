@@ -69,7 +69,7 @@ Agile.core = {
      * @param {JSON} config object: before(), always(), method, url, parms |=====| REQUIRED
      * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
      * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
-     * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is GET |=====| OPTIONAL
+     * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
      * @param {URL | String} url URL of the end. Could be a local file or a URL |=====| REQUIRED
      * @param {JSON} parms parameters, like your post parameters |=====| OPTIONAL
      * @memberof Agile.core namespace
@@ -77,7 +77,7 @@ Agile.core = {
     */
     ajax: function (config) {
         return new Promise(function (resolve, reject) {
-            config.method = config.method.toUpperCase() || "GET";
+            config.method = config.method.toUpperCase() || "POST";
             typeof config.before === "function" ? config.before() : null;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
@@ -284,6 +284,33 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('done')
     })*/
 })
+Agile.components.Contact = function (root) {
+    var self = this;
+    this.root = root;
+    this.props = JSON.parse(self.root.dataset.props);
+
+    self.render();
+    
+    Agile.core.bind(self.root, this);
+}
+
+Agile.components.Contact.prototype.render = function() {
+    var self = this;
+
+
+    self.root.innerHTML += `
+        <h2 class="center">Let's Chat</h2>
+        <p class="center"></p>
+        <div>
+            <input type="text" placeholder="Name" name="name" required>
+            <input type="text" placeholder="Email" name="email" required>
+        </div>
+        <textarea name="message"></textarea>
+        <button data-bind="click: sendEmail">Send Message</button>
+    `;
+}
+
+
 /**
  * @name ImageGallery
  * @author Nate Noye
@@ -472,69 +499,3 @@ Agile.components.NavBar.prototype.hbMenu = function (e, target) {
     var self = this;
     self.navBar.classList.toggle("slide");
 }
-Agile.components.SearchBar = function (root) {
-    var self = this;
-    this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
-
-    self.render();
-
-    this.input = self.root.querySelector('input');
-    
-    Agile.core.bind(self.root, this);
-}
-
-Agile.components.SearchBar.prototype.render = function() {
-    var self = this;
-
-
-    self.root.innerHTML += `
-        <input type="text">
-        <button data-bind="click: sendData">Send</button>
-    `;
-}
-
-Agile.components.SearchBar.prototype.sendData = function(e, target) {
-    var self = this;
-
-    var data;
-
-    data = {filter: self.input.value}
-    Agile.emit.call("textContent", data)
-}
-Agile.components.Text = function (root) {
-    var self = this;
-    this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
-
-    self.render();
-    
-    Agile.core.bind(self.root, this);
-
-    self.thisText.set('Hello World');
-}
-
-Agile.components.Text.prototype.render = function() {
-    var self = this;
-
-
-    self.root.innerHTML += `
-        <h1 data-bind="text: thisText"></h1>
-        <button data-bind="click: textContent">test</button>
-    `;
-}
-
-Agile.components.Text.prototype.textContent = function(data) {
-    var self = this;
-    
-    self.thisText.set(data.filter || "fallback text", function () {
-        Agile.emit.call("textChangedEMIT", "Hello from text change")
-    });
-}
-
-Agile.components.Text.prototype.textChangedEMIT = function(data) {
-    var self = this;
-    
-    self.thisText.set(data);
-}
-

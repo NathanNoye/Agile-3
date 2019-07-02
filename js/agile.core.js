@@ -69,7 +69,7 @@ Agile.core = {
      * @param {JSON} config object: before(), always(), method, url, parms |=====| REQUIRED
      * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
      * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
-     * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is GET |=====| OPTIONAL
+     * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
      * @param {URL | String} url URL of the end. Could be a local file or a URL |=====| REQUIRED
      * @param {JSON} parms parameters, like your post parameters |=====| OPTIONAL
      * @memberof Agile.core namespace
@@ -77,7 +77,7 @@ Agile.core = {
     */
     ajax: function (config) {
         return new Promise(function (resolve, reject) {
-            config.method = config.method.toUpperCase() || "GET";
+            config.method = config.method.toUpperCase() || "POST";
             typeof config.before === "function" ? config.before() : null;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {

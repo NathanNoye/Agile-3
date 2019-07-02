@@ -34,7 +34,7 @@ Example:
 <div data-component="Text" data-props='{"emit-receive": "textChangedEMIT"}'></div>
 
 // This is the event that'll cause the data to be emitted
-Agile.components.SearchBar.prototype.clickEvent = function () {
+Agile.components.SearchBar.prototype.clickEvent = function (e, target) {
     Agile.emit.call(textChangedEMIT, {"some": "data"});
 }
 

@@ -13,14 +13,16 @@
     <br>
     <br>
     <br>
-    <div data-component="SearchBar" data-props='{"emit-send": "textContent", "name": "test"}'></div>
-    <hr>
-    <div data-component="Text" data-props='{"emit-receive": "textContent", "emit-send": "textChanged"}'></div>
-    <div data-component="Text" data-props='{"emit-receive": "textChangedEMIT"}'>
-        <hr>
-        <p>Something diferent</p>
+    
+    <div class="grid-container">
+        <div class="grid-row">
+            <div class="grid-col-3"></div>
+            <div class="grid-col-6">
+                <div data-component="Contact" data-props='{"":""}'></div>
+            </div>
+            <div class="grid-col-3"></div>
+        </div>
     </div>
-    <div data-component="Text" data-props='{"":""}'></div>
-    <div data-component="Text" data-props='{"emit-receive": "textContent"}'></div>
+    
 </body>
 </html>

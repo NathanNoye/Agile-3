@@ -1,0 +1,11 @@
+[data-component="Contact"] {
+    width: 100%;
+}
+
+[data-component="Contact"]  .center {
+    text-align: center;
+}
+
+[data-component="Contact"] > div {
+    display: flex;
+}
