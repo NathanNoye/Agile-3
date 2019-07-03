@@ -307,7 +307,7 @@ Agile.components.Contact.prototype.render = function() {
         <p class="">${self.props.subtext || ""}</p>
         <div>
             <input type="text" placeholder="Name" name="name" required>
-            <input type="text" placeholder="Email" name="email" required>
+            <input type="text" placeholder="Email" name="email" required data-bind="css: fail">
         </div>
         <textarea name="message" placeholder="Message"></textarea>
         <button data-bind="click: sendEmail">Send Message</button>
@@ -318,6 +318,7 @@ Agile.components.Contact.prototype.sendEmail = function(e, target) {
     var self = this;
 
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(self.email.value))) {
+        self.fail.check(true)
         return;
     }
 

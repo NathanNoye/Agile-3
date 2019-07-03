@@ -5,6 +5,12 @@
     --color-accent: #ff7800;
     --color-accent-secondary: #da5700;
     --color-background: #F5F5F5;
+
+    --success: #6BBD6E;
+    --warning: #FFBB34;
+    --info: #3dbced;
+    --fail: #F66359;
+
 }
 
 *{

@@ -11,6 +11,14 @@
     text-align: center;
 }
 
+[data-component="Contact"] .correct {
+    border: 2px solid var(--success)
+}
+
+[data-component="Contact"] .fail {
+    border: 2px solid var(--fail);
+}
+
 [data-component="Contact"] > div {
     display: flex;
     margin-bottom: 10px;
