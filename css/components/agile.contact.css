@@ -12,11 +12,11 @@
 }
 
 [data-component="Contact"] .correct {
-    border: 2px solid var(--success)
+    border: 1px solid var(--success)
 }
 
 [data-component="Contact"] .fail {
-    border: 2px solid var(--fail);
+    border: 1px solid var(--fail);
 }
 
 [data-component="Contact"] > div {
