@@ -2,10 +2,67 @@
     width: 100%;
 }
 
-[data-component="Contact"]  .center {
+[data-component="Contact"] p {
+    line-height: 1.2;
+    margin-bottom: 15px;
+}
+
+[data-component="Contact"] .center {
     text-align: center;
 }
 
 [data-component="Contact"] > div {
     display: flex;
+    margin-bottom: 10px;
+}
+
+[data-component="Contact"] > div > input {
+    flex: 1;
+    padding: 8px;
+}
+
+[data-component="Contact"] > div > input:first-of-type {
+    flex: 1;
+    margin-right: 8px;
+}
+
+[data-component="Contact"] > textarea {
+    display: block;
+    width: 100%;
+    min-height: 170px;
+    resize: none;
+    padding: 8px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+[data-component="Contact"] > textarea, [data-component="Contact"] > div > input {
+    border-radius: 3px;
+    border: thin solid #ccc;
+    transition: .2s;
+}
+
+[data-component="Contact"] > textarea:focus, [data-component="Contact"] > div > input:focus {
+    border-radius: 3px;
+    border: thin solid var(--color-accent);
+}
+
+[data-component="Contact"] > textarea::placeholder, [data-component="Contact"] > div > input::placeholder {
+    color: #aaa;
+}
+
+[data-component="Contact"] > button {
+    border: none;
+    display: block;
+    width: 200px;
+    margin: auto;
+    padding: 10px;
+    color: #fff;
+    background-color: var(--color-accent);
+    transition: .2s;
+}
+
+[data-component="Contact"] > button:hover {
+    cursor: pointer;
+    box-shadow:inset 0 0 0 99999px rgba(255,255,255,0.2);
 }
