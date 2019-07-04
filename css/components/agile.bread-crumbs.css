@@ -1,0 +1,7 @@
+[data-component="BreadCrumbs"] a {
+    color: var(--color-secondary);
+}
+
+[data-component="BreadCrumbs"] span {
+    color: var(--color-primary);
+}
