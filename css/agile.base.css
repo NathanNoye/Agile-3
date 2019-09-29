@@ -189,6 +189,14 @@ pre:not(:last-of-type){
 .pointer:hover {
     cursor: pointer;
 }
+
+.fade-out-gradient {
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+    background: linear-gradient(to bottom,  rgba(0,0,0,0) 50%,rgba(0,0,0,1) 100%);
+}
   
 /* under the minimum / Mobile only */
 @media only screen and (max-width : 320px) {
