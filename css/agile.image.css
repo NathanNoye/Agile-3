@@ -44,7 +44,7 @@
     object-fit: cover;
 }
 
-[class*="image-hero-"] > .image-hero-text-center {
+[class*="image-hero"] > .image-hero-text-center {
     text-align: center;
     position: absolute;
     top: 50%;
@@ -53,25 +53,25 @@
     width: 90%;
 }
 
-[class*="image-hero-"] > .image-hero-text-top-left{
+[class*="image-hero"] > .image-hero-text-top-left{
     position: absolute;
     top: 8px;
     left: 16px;
 }
 
-[class*="image-hero-"] > .image-hero-text-top-right{
+[class*="image-hero"] > .image-hero-text-top-right{
     position: absolute;
     top: 8px;
     right: 16px;
 }
 
-[class*="image-hero-"] > .image-hero-text-bottom-left{
+[class*="image-hero"] > .image-hero-text-bottom-left{
     position: absolute;
     bottom: 8px;
     left: 16px;
 }
 
-[class*="image-hero-"] > .image-hero-text-bottom-right{
+[class*="image-hero"] > .image-hero-text-bottom-right{
     position: absolute;
     bottom: 8px;
     right: 16px;
