@@ -35,7 +35,7 @@ Example:
 
 // This is the event that'll cause the data to be emitted
 Agile.components.SearchBar.prototype.clickEvent = function (e, target) {
-    Agile.emit.call(textChangedEMIT, {"some": "data"});
+    Agile.emit.call("textChangedEMIT", {"some": "data"});
 }
 
 // This is where the emitted data will end up
