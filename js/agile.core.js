@@ -65,8 +65,17 @@ Agile.core = {
             Agile.core.VM_LIST.push(new Agile.components[key.getAttribute('data-component')](key));
         });
     },
+    UUID: function () {
+        let dt = new Date().getTime();
+        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            let r = (dt + Math.random()*16)%16 | 0;
+            dt = Math.floor(dt/16);
+            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    },
     /**
-     * @param {JSON} config object: before(), always(), method, url, parms |=====| REQUIRED
+     * @param {JSON} config object: before(), always(), method, url, parms, requestHeader |=====| REQUIRED
      * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
      * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
      * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
@@ -94,14 +103,18 @@ Agile.core = {
             xmlhttp.open(config.method, config.url);
 
             if (config.parms) {
-                xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                let parmString = "";
-                for (var key in config.parms) {
-                    if (config.parms.hasOwnProperty(key)) {
-                        parmString += key + "=" + config.parms[key] + "&";
+                if (config.contentType == 'formdata') {
+                    xmlhttp.send(config.parms);
+                } else {
+                    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    let parmString = "";
+                    for (var key in config.parms) {
+                        if (config.parms.hasOwnProperty(key)) {
+                            parmString += key + "=" + config.parms[key] + "&";
+                        }
                     }
+                    xmlhttp.send(parmString.substr(0, parmString.length - 1))
                 }
-                xmlhttp.send(parmString.substr(0, parmString.length - 1))
             } else {
                 xmlhttp.send();
             }
