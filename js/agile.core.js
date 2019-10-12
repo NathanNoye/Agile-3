@@ -24,7 +24,9 @@ Agile.core = {
                     vm[fn] = new Agile.observable.class(el, fn);
                 }
                 el.addEventListener(_eventType, function (e) {
-                    e.preventDefault();
+                    if (["click"].includes(_eventType)) {
+                        e.preventDefault();
+                    }
                     try {
                         vm[fn](e, el);
                     } catch (err) {
