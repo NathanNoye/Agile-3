@@ -1,0 +1,96 @@
+.data-table{
+    text-align: left;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: @background-color;
+    padding-bottom: 50px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.data-table tr{
+    background-color: #fff;
+}
+
+.data-table tr:nth-child(even) {
+    background-color: #efefef;
+}
+
+.data-table th{
+    font-size: 1.35em;
+    color: #fff;
+    background-color: @accent-color;
+    font-weight: 100;
+    position: sticky;
+    top: 0;
+}
+
+.data-table th, .data-table td {
+    padding: 12px 10px;
+    border-bottom: thin solid #d8d8d8;
+}
+
+.data-table td {
+    font-size: 1em;
+}
+
+.data-table td a{
+    color: @primary-color;
+}
+
+.data-table td a:hover{
+    color: @accent-color;
+}
+
+@media only screen and (max-width: 768px) {
+    .data-table tr > td:first-of-type {
+        color: @primary-color;
+        cursor: pointer;
+    }
+    
+    
+    .data-table table, .data-table thead, .data-table tbody, .data-table th, .data-table td, .data-table tr {
+        display: block;
+    }
+    
+    .data-table tr > td:not(:first-of-type) {
+        display: none;
+        visibility: hidden;
+    }
+    
+    .data-table tr th{
+        display: none;
+        visibility: hidden;
+    }
+    
+    .data-table{
+        max-width: 100%;
+        transition: .2s;
+    }
+    
+    .data-table-show td:first-of-type{
+        color: #fff !important;
+        background-color: @accent-color;
+        border-bottom: 2px solid @accent-color;
+    }
+    
+    .data-table-show td:not(:first-of-type){
+        color: @primary-color !important;
+        background-color: #fff;
+        border-left: 2px solid @accent-color;
+        border-right: 2px solid @accent-color;
+    }
+    
+    .data-table-show td:last-of-type{
+        color: @primary-color !important;
+        background-color: #fff;
+        border-bottom: 2px solid @accent-color;
+    }
+    
+    .data-table-show td{
+        display: block !important;
+        visibility: visible !important;
+        border-bottom: thin solid @accent-color;
+    }
+}

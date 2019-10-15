@@ -1,0 +1,85 @@
+.forms-align label{
+    width: 25%;
+    text-align: left;
+    display: inline-block;
+    margin-right: 5%;
+    margin-bottom: 3px;
+    vertical-align: top;
+}
+
+.forms-align textarea, .forms-clean textarea {
+    min-height: 125px;
+}
+
+.forms-align input[type=text], .forms-align input[type=email], .forms-align input[type=password], .forms-align textarea{
+	display: inline-block;
+    padding: 2px;
+    width: 70%;
+    transition: .2s;
+    margin-bottom: 15px;
+    border: thin solid #ccc;
+    border-radius: 3px;
+    padding: 5px 8px;
+    line-height: 1.65;
+    resize: none;
+}
+
+.forms-clean input[type=text], .forms-clean input[type=email], .forms-clean input[type=password], .forms-clean textarea{
+    width: 100%;
+    border-radius: 2px;
+    background-color: #f5f5f5;
+    border: thin solid #eee;
+    padding: 12px;
+    outline: none;
+    transition: 0.2s;
+    padding: 5px 8px;
+    line-height: 1.65;
+    resize: none;
+}
+
+.forms-clean input[type=text]:focus, .forms-clean input[type=email]:focus, .forms-clean input[type=password]:focus, .forms-clean textarea:focus{
+    background-color: #fff;
+    border: thin solid #ddd;
+}
+
+.forms-button {
+    background-color: @accent-color;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    transition: .2s;
+}
+.forms-button:hover {
+    cursor: pointer;
+    box-shadow:inset 0 0 0 99999px rgba(255,255,255,0.2);
+}
+
+.forms-button-right {
+    float: right;
+}
+
+.forms-button-right::after{
+    content: '';
+    clear: both;
+}
+
+.forms-button-full{
+    width: 100%;
+    border: none;
+    padding: 12px;
+    border: thin solid #eee;
+}
+
+@media only screen and (max-width : 768px) {
+    .forms-align label{
+        width: 100%;
+        display: block;
+        text-align: left;
+    }
+
+    .forms-align input[type=text], .forms-align input[type=email], .forms-align input[type=password], .forms-align textarea{
+        width: 100%;
+        display: block;
+        text-align: left;
+    }
+}

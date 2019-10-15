@@ -14,11 +14,11 @@
 }
 
 [data-component="Contact"] .correct {
-    border: 1px solid var(--success)
+    border: 1px solid @success-color
 }
 
 [data-component="Contact"] .fail {
-    border: 1px solid var(--fail);
+    border: 1px solid @fail-color;
 }
 
 [data-component="Contact"] > div {
@@ -54,7 +54,7 @@
 
 [data-component="Contact"] > textarea:focus, [data-component="Contact"] > div > input:focus {
     border-radius: 3px;
-    border: thin solid var(--color-accent);
+    border: thin solid @accent-color;
 }
 
 [data-component="Contact"] > textarea::placeholder, [data-component="Contact"] > div > input::placeholder {
@@ -68,7 +68,7 @@
     margin: auto;
     padding: 10px;
     color: #fff;
-    background-color: var(--color-accent);
+    background-color: @accent-color;
     transition: .2s;
 }
 

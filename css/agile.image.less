@@ -1,0 +1,144 @@
+.image-hero{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: initial;
+    z-index: -999;
+    margin-bottom: 4vw;
+}
+
+.image-hero-chevron{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: initial;
+    z-index: -999;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+    clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+    margin-bottom: 4vw;
+}
+
+.image-hero-slant{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: initial;
+    z-index: -999;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 95%, 0% 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 95%, 0% 100%);
+    margin-bottom: 4vw;
+}
+
+.image-hero-70{
+    width: 100%;
+    height: 70vh;
+    overflow: hidden;
+    position: initial;
+    z-index: -999;
+    margin-bottom: 4vw;
+}
+
+.image-hero > img, .image-hero > video, .image-hero-chevron > img, .image-hero-chevron > video, .image-hero-slant > img, .image-hero-slant > video, .image-hero-70 > img, .image-hero-70 > video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+[class*="image-hero"] > .image-hero-text-center {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+}
+
+[class*="image-hero"] > .image-hero-text-top-left{
+    position: absolute;
+    top: 8px;
+    left: 16px;
+}
+
+[class*="image-hero"] > .image-hero-text-top-right{
+    position: absolute;
+    top: 8px;
+    right: 16px;
+}
+
+[class*="image-hero"] > .image-hero-text-bottom-left{
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+}
+
+[class*="image-hero"] > .image-hero-text-bottom-right{
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+}
+
+.image-darken{
+    filter: brightness(59%); 
+}
+
+.image-darken-darker{
+    filter: brightness(45%);
+}
+
+.image-fill{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-fit{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.image-text-overlay{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+}
+
+.masonry-wrapper {
+    column-count: 4;
+    column-gap: 0;
+    width: 100%;
+    max-width: 1024px;
+    margin: auto;
+}
+
+.masonry-wrapper > div {
+    break-inside: avoid;
+}
+
+.masonry-wrapper > div > img{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+.masonry-wrapper > div > img:hover{
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+@media only screen and (max-width : 480px) {
+    .masonry-wrapper {
+        column-count: 2;
+    }
+}
+
+@media only screen and (min-width : 480px) and (max-width : 768px){
+    .masonry-wrapper {
+        column-count: 3;
+    }
+}

@@ -3,6 +3,7 @@ const minifyJS = require('gulp-minify');
 const cleanCSS = require('gulp-clean-css');
 const concat = require('gulp-concat');
 const autoprefixer = require('gulp-autoprefixer');
+const less = require('gulp-less');
 
 function scripts () {
     return (
@@ -15,8 +16,9 @@ function scripts () {
 
 function styles () {
     return (
-        gulp.src(["./css/agile.base.css", "./css/**/*.css"])
-            .pipe(concat('main-min.css'))
+        gulp.src(["./css/agile.variables.less", "./css/agile.base.less", "./css/**/*.less"])
+            .pipe(concat('main-min.less'))
+            .pipe(less())
             .pipe(autoprefixer())
             .pipe(cleanCSS())
             .pipe(gulp.dest('./prod/'))

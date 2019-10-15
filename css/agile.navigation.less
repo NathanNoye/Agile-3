@@ -1,0 +1,130 @@
+.nav-white-ovrd {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.nav-white-ovrd > a {
+    color: #fff !important;
+}
+
+.nav-white-ovrd img{
+    filter: brightness(100) !important;
+}
+
+#nav-mobile-toggle {
+    display: none;
+}
+
+#nav-mobile-toggle + input[type=checkbox] {
+    display: none;
+    visibility: hidden;
+}
+
+.nav-equidistant{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10%;
+}
+
+.nav-equidistant > a{
+    padding: 7px 30px 7px 30px;
+    display: inline-block;
+}
+
+
+.nav-standard{
+    width: 100%;
+    padding: 0 10%;
+    background-color: rgba(255, 255, 255, 0.90);
+    position: fixed;
+    top: 0;
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    transition: .2s;
+}
+
+.nav-standard img {
+    width: 24px;
+}
+
+.nav-standard > a:first-of-type {
+    font-size: 1.5em;
+    flex: 1;
+}
+
+.nav-standard > a:not(:first-of-type) {
+    text-align: center;
+}
+
+.nav-standard > a{
+    padding: 7px 10px 7px 10px;
+    color: @primary-color;
+    transition: .1s;
+}
+
+.nav-standard > a:hover{
+    color: @accent-color;
+}
+
+@media only screen and (max-width : 768px) {
+    .nav-close{
+        transform: translateX(-280px);
+    }
+
+    #nav-mobile-toggle + input[type=checkbox]:not(:checked) ~ .nav-standard{
+        transform: translateX(-280px);
+    }
+
+    #nav-mobile-toggle {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 999;
+        display: block;
+        font-size: 2em;
+        padding: 0px 15px;
+        color: @accent-color;
+    }
+
+    .nav-standard{
+        background-color: #f5f5f5 !important;
+        width: 250px;
+        height: 100vh;
+        overflow-y: scroll;
+        display: block;
+        padding: 10px;
+    }
+
+    .nav-standard > a {
+        display: block;
+        width: 100%;
+        text-align: left !important;
+    }
+
+    .nav-standard > a:first-of-type {
+        margin-top: 25px;
+    }
+
+    .nav-standard > a:last-of-type {
+        margin-bottom: 50px;
+    }
+}
+
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+    .nav-standard{
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .nav-standard > a:first-of-type {
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .nav-standard > a:not(:first-of-type) {
+        display: flex;
+        align-items: center;
+    }
+}
