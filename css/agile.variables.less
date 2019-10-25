@@ -1,10 +1,38 @@
-@primary-color:             #3A393A;
-@secondary-color:           #8E8D8E;
-@accent-color:              #ff7800;
-@accent-secondary-color:    #da5700;
-@background-color:          #F5F5F5;
+/*====================================
+=              VARIABLES             =
+====================================*/
+@primary-color:                     #3A393A;
+@secondary-color:                   #8E8D8E;
+@accent-color:                      #ff7800;
+@accent-color-darker:               darken(@accent-color, 20%);
+@accent-secondary-color:            #14e375;
+@accent-secondary-color-darker:     darken(@accent-secondary-color, 20%);
+@background-color:                  #F5F5F5;
+@footer-color:                      #393939
 
-@success-color:             #6BBD6E;
-@warning-color:             #FFBB34;
-@info-color:                #3dbced;
-@fail-color:                #F66359;
+@success-color:                     #6BBD6E;
+@warning-color:                     #FFBB34;
+@info-color:                        #3dbced;
+@fail-color:                        #F66359;
+
+/*====================================
+=            BREAK POINTS            =
+====================================*/
+@desktop: ~'(max-width: 1199px)';
+@laptop: ~'(max-width: 991px)';
+@tablet: ~'(max-width: 767px)';
+@phone: ~'(max-width: 480px)';
+@small-phone: ~'(max-width: 320px)';
+
+/*
+EXAMPLE: (Put this on agile website)
+
+h2 {
+    font-size: 60px;
+
+    @media @desktop { font-size: 50px; }
+    @media @laptop{ font-size: 40px; }
+    @media @tablet { font-size: 20px; }
+    @media @phone { font-size: 15px; }
+}
+*/
