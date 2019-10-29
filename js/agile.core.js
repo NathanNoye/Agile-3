@@ -4,6 +4,7 @@ Agile.components = {} || Agile.components;
 Agile.observable = {} || Agile.observable;
 Agile.fx = {} || Agile.fx;
 Agile.emit = {} || Agile.emit;
+Agile.crypto = {} || Agile.crypto;
 
 Agile.core = {
     VM_LIST: [],
@@ -77,12 +78,12 @@ Agile.core = {
         return uuid;
     },
     /**
-     * @param {JSON} config object: before(), always(), method, url, parms, requestHeader |=====| REQUIRED
+     * @param {JSON} config object: before(), always(), method, url, params, requestHeader |=====| REQUIRED
      * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
      * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
      * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
      * @param {URL | String} url URL of the end. Could be a local file or a URL |=====| REQUIRED
-     * @param {JSON} parms parameters, like your post parameters |=====| OPTIONAL
+     * @param {JSON} params parameters, like your post parameters |=====| OPTIONAL
      * @memberof Agile.core namespace
      * @returns {Promise}
     */
@@ -104,18 +105,18 @@ Agile.core = {
             };
             xmlhttp.open(config.method, config.url);
 
-            if (config.parms) {
+            if (config.params) {
                 if (config.contentType == 'formdata') {
-                    xmlhttp.send(config.parms);
+                    xmlhttp.send(config.params);
                 } else {
                     xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    let parmString = "";
-                    for (var key in config.parms) {
-                        if (config.parms.hasOwnProperty(key)) {
-                            parmString += key + "=" + config.parms[key] + "&";
+                    let paramstring = "";
+                    for (var key in config.params) {
+                        if (config.params.hasOwnProperty(key)) {
+                            paramstring += key + "=" + config.params[key] + "&";
                         }
                     }
-                    xmlhttp.send(parmString.substr(0, parmString.length - 1))
+                    xmlhttp.send(paramstring.substr(0, paramstring.length - 1))
                 }
             } else {
                 xmlhttp.send();

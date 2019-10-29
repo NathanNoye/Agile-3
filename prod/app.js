@@ -4,6 +4,7 @@ Agile.components = {} || Agile.components;
 Agile.observable = {} || Agile.observable;
 Agile.fx = {} || Agile.fx;
 Agile.emit = {} || Agile.emit;
+Agile.crypto = {} || Agile.crypto;
 
 Agile.core = {
     VM_LIST: [],
@@ -24,7 +25,9 @@ Agile.core = {
                     vm[fn] = new Agile.observable.class(el, fn);
                 }
                 el.addEventListener(_eventType, function (e) {
-                    e.preventDefault();
+                    if (["click"].includes(_eventType)) {
+                        e.preventDefault();
+                    }
                     try {
                         vm[fn](e, el);
                     } catch (err) {
@@ -65,13 +68,22 @@ Agile.core = {
             Agile.core.VM_LIST.push(new Agile.components[key.getAttribute('data-component')](key));
         });
     },
+    UUID: function () {
+        let dt = new Date().getTime();
+        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            let r = (dt + Math.random()*16)%16 | 0;
+            dt = Math.floor(dt/16);
+            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    },
     /**
-     * @param {JSON} config object: before(), always(), method, url, parms |=====| REQUIRED
+     * @param {JSON} config object: before(), always(), method, url, params, requestHeader |=====| REQUIRED
      * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
      * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
      * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
      * @param {URL | String} url URL of the end. Could be a local file or a URL |=====| REQUIRED
-     * @param {JSON} parms parameters, like your post parameters |=====| OPTIONAL
+     * @param {JSON} params parameters, like your post parameters |=====| OPTIONAL
      * @memberof Agile.core namespace
      * @returns {Promise}
     */
@@ -93,15 +105,19 @@ Agile.core = {
             };
             xmlhttp.open(config.method, config.url);
 
-            if (config.parms) {
-                xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                let parmString = "";
-                for (var key in config.parms) {
-                    if (config.parms.hasOwnProperty(key)) {
-                        parmString += key + "=" + config.parms[key] + "&";
+            if (config.params) {
+                if (config.contentType == 'formdata') {
+                    xmlhttp.send(config.params);
+                } else {
+                    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    let paramstring = "";
+                    for (var key in config.params) {
+                        if (config.params.hasOwnProperty(key)) {
+                            paramstring += key + "=" + config.params[key] + "&";
+                        }
                     }
+                    xmlhttp.send(paramstring.substr(0, paramstring.length - 1))
                 }
-                xmlhttp.send(parmString.substr(0, parmString.length - 1))
             } else {
                 xmlhttp.send();
             }
@@ -156,6 +172,12 @@ Agile.observable = {
         this.initialValue = element.innerHTML;
         this.set = function (value, callback) {
             self.element.innerHTML = value;
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+        }
+        this.add = function (value, callback) {
+            self.element.innerHTML += value + '\n';
             if (callback && typeof callback === "function") {
                 callback();
             }
@@ -221,6 +243,36 @@ Agile.observable = {
     }
 };
 
+Agile.crypto = {
+    salt: function () {
+
+    },
+    pepper: function () {
+
+    },
+    encrypt: function (readableString) {
+        var result = "";
+        for (i = 0; i < readableString.length; i++) {
+            if (i < readableString.length - 1) {
+                result += readableString.charCodeAt(i) + 10;
+                result += "-";
+            }
+            else {
+                result += readableString.charCodeAt(i) + 10;
+            }
+        }
+        return result;
+    },
+    decrypt: function (encryptedString) {
+        var result = "";
+        var array = encryptedString.split("-");
+    
+        for (i = 0; i < array.length; i++) {
+            result += String.fromCharCode(array[i] - 10);
+        }
+        return result;
+    }
+}
 Agile.emit = {
     init: function () {
         [].slice.call(document.querySelectorAll('[data-props*="emit-send"]')).forEach(emitter => {

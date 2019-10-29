@@ -45,6 +45,12 @@ Agile.observable = {
                 callback();
             }
         }
+        this.add = function (value, callback) {
+            self.element.innerHTML += value + '\n';
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+        }
         this.get = function () {
             return self.initialValue;
         }
