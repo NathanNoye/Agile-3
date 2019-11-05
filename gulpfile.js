@@ -7,7 +7,7 @@ const less = require('gulp-less');
 
 function scripts () {
     return (
-        gulp.src(["./js/agile.core.js", "./js/agile.observe.js", "./js/**/*.js"])
+        gulp.src(["./clientLibs/js/agile/agile.core.js", "./clientLibs/js/agile/agile.observe.js", "./clientLibs/**/*.js", "./components/**/*.js"])
             .pipe(concat('app.js'))
             .pipe(minifyJS())
             .pipe(gulp.dest('./prod/'))
@@ -16,7 +16,7 @@ function scripts () {
 
 function styles () {
     return (
-        gulp.src(["./css/agile.variables.less", "./css/agile.base.less", "./css/**/*.less"])
+        gulp.src(["./clientLibs/css/agile/agile.variables.less", "./clientLibs/css/agile/agile.base.less", "./clientLibs/css/**/*.less", "./clientLibs/css/**/*.css", "./components/**/*.less", "./components/**/*.css"])
             .pipe(concat('main-min.less'))
             .pipe(less())
             .pipe(autoprefixer())
@@ -35,12 +35,12 @@ gulp.task('easy-package', function (done) {
 })
 
 gulp.task('watch-scripts', function (done) {
-    gulp.watch('./js/**/*.js', scripts);
+    gulp.watch(['./clientLibs/js/**/*.js', './components/**/*.js'], scripts);
     done();
 });
 
 gulp.task('watch-styles', function (done) {
-    gulp.watch('./css/**/*.css', styles);
+    gulp.watch(['./clientLibs/css/**/*.css', './clientLibs/css/**/*.less', './components/**/*.css', './components/**/*.less'], styles);
     done();
 });
 

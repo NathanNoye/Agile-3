@@ -1,11 +1,9 @@
-Agile.components.Contact = function (root) {
+Agile.components.Contact = function (root, config) {
     var self = this;
     this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
+    this.config = config;
 
     self.render();
-    
-    Agile.core.bind(self.root, this);
 
     self.name = self.root.querySelector('input[name="name"]');
     self.email = self.root.querySelector('input[name="email"]');
@@ -17,8 +15,8 @@ Agile.components.Contact.prototype.render = function() {
 
 
     self.root.innerHTML += `
-        <h2 class="">${self.props.header || "Let's Chat"}</h2>
-        <p class="">${self.props.subtext || ""}</p>
+        <h2 class="">${self.config.header || "Let's Chat"}</h2>
+        <p class="">${self.config.subtext || ""}</p>
         <div>
             <input type="text" placeholder="Name" name="name" required>
             <input type="text" placeholder="Email" name="email" required data-bind="css: fail">

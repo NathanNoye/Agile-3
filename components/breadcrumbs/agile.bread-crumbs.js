@@ -1,11 +1,9 @@
-Agile.components.BreadCrumbs = function (root) {
+Agile.components.BreadCrumbs = function (root, config) {
     var self = this;
     this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
+    this.config = config;
 
     self.render();
-
-    Agile.core.bind(self.root, this);
 }
 
 Agile.components.BreadCrumbs.prototype.render = function () {

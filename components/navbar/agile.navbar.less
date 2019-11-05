@@ -1,0 +1,30 @@
+[data-component="NavBar"] {
+    .nav-ham {
+        display: none;
+
+        @media @tablet {
+            position: fixed;
+            display: block;
+            width: 100%;
+            top: 5px;
+            left: 20px;
+            z-index: 999;
+            font-size: 30px;
+        }
+    }
+
+    .nav-standard {
+        & > a:first-of-type {
+            @media @tablet {
+                margin-top: 40px;
+            }
+        }
+    }
+
+    .slide {
+        @media @tablet {
+            transform: translateX(-280px);
+        }
+    }
+    
+}

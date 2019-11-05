@@ -5,6 +5,7 @@ Agile.observable = {} || Agile.observable;
 Agile.fx = {} || Agile.fx;
 Agile.emit = {} || Agile.emit;
 Agile.crypto = {} || Agile.crypto;
+Agile.common = {} || Agile.common;
 
 Agile.core = {
     VM_LIST: [],
@@ -37,98 +38,41 @@ Agile.core = {
                 el.removeAttribute('data-bind');
             })
         });
-        rootEl.removeAttribute('data-props');
-    },
-    /**
-     * @param {JSON} config.where beforebegin, afterbegin, beforeend, afterend
-     * @param {JSON} config.el the element to insert the HTML
-     * @param {JSON} config.html The actual HTML
-     */
-    insertHTML: function (config) {
-        config.where = config.where || 'beforeend';
-        config.el.insertAdjacentHTML(config.where, config.html);
-    },
-    /**
-     * @description Checks if the user browser is mobile
-     */
-    isMobile: function () {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    },
-    /**
-     * @description Checks if the website is being viewed via a PWA in standalone mode
-     */
-    isPWA: function () {
-        return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone);
     },
     /**
      * @description Used to initialize all the components in the Agile.components group
      */
     initializeComponents: function () {
         document.querySelectorAll('[data-component]').forEach(key => {
-            Agile.core.VM_LIST.push(new Agile.components[key.getAttribute('data-component')](key));
-        });
-    },
-    UUID: function () {
-        let dt = new Date().getTime();
-        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            let r = (dt + Math.random()*16)%16 | 0;
-            dt = Math.floor(dt/16);
-            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-        });
-        return uuid;
-    },
-    /**
-     * @param {JSON} config object: before(), always(), method, url, params, requestHeader |=====| REQUIRED
-     * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
-     * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
-     * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
-     * @param {URL | String} url URL of the end. Could be a local file or a URL |=====| REQUIRED
-     * @param {JSON} params parameters, like your post parameters |=====| OPTIONAL
-     * @memberof Agile.core namespace
-     * @returns {Promise}
-    */
-    ajax: function (config) {
-        return new Promise(function (resolve, reject) {
-            config.method = config.method.toUpperCase() || "POST";
-            typeof config.before === "function" ? config.before() : null;
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-                    if (xmlhttp.status == 200) {
-                        resolve(xmlhttp)
-                    }
-                    else {
-                        reject(xmlhttp)
-                    }
-                    typeof config.after === "function" ? config.after(xmlhttp) : null;
-                }
-            };
-            xmlhttp.open(config.method, config.url);
 
-            if (config.params) {
-                if (config.contentType == 'formdata') {
-                    xmlhttp.send(config.params);
-                } else {
-                    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    let paramstring = "";
-                    for (var key in config.params) {
-                        if (config.params.hasOwnProperty(key)) {
-                            paramstring += key + "=" + config.params[key] + "&";
-                        }
-                    }
-                    xmlhttp.send(paramstring.substr(0, paramstring.length - 1))
-                }
-            } else {
-                xmlhttp.send();
+            let props = JSON.parse(JSON.stringify(key.dataset));
+            let newComponent = new Agile.components[key.getAttribute('data-component')](key, props);
+            newComponent["_rebind"] = () => { Agile.core.bind(key, newComponent); }
+            Agile.core.VM_LIST.push(newComponent);
+            Agile.core.bind(key, newComponent);
+            let attrArr = [].slice.call(key.attributes)
+            for ( let i = 1; i < attrArr.length; i++) {
+                key.removeAttribute(attrArr[i].name)
             }
+
         });
-    }
+    },
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     Agile.core.initializeComponents();
 });
 
+/*
+// This is for testing. Later this will be use to send error information asynchronously to a db table or file. Maybe. Idk yet.
+(function() {
+    var exLog = console.error;
+    console.error = function(msg) {
+        exLog.apply(this, arguments);
+        alert(msg);
+    }
+})()
+*/
 // HOW TO USE THE OBSERVABLE CLASS
 // -- Note: The bind object should not be touched. Don't do it. Please. I'll cry. I spent a long time trying to get this to work. I was basically walking in the dark trying to get this to work. So please no. Please.
 // OBSERVABLE TEXT - make text update the UI automatically
@@ -243,6 +187,93 @@ Agile.observable = {
     }
 };
 
+Agile.common = {
+    /**
+     * @param {JSON} config.where beforebegin, afterbegin, beforeend, afterend
+     * @param {JSON} config.el the element to insert the HTML
+     * @param {JSON} config.html The actual HTML
+     */
+    insertHTML: function (config) {
+        config.where = config.where || 'beforeend';
+        config.el.insertAdjacentHTML(config.where, config.html);
+    },
+    /**
+     * @description Checks if the user browser is mobile
+     */
+    isMobile: function () {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    },
+    /**
+     * @description Checks if the website is being viewed via a PWA in standalone mode
+     */
+    isPWA: function () {
+        return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone);
+    },
+    UUID: function () {
+        let dt = new Date().getTime();
+        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            let r = (dt + Math.random()*16)%16 | 0;
+            dt = Math.floor(dt/16);
+            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    },
+    random: function (min, max) {
+        return Math.floor(Math.random() * max) + min;
+    },
+    /**
+     * @param {JSON} config object: before(), always(), method, url, params, requestHeader |=====| REQUIRED
+     * @param {fn} before() - called at the very start of the function |=====| OPTIONAL
+     * @param {fn}	after() - always called after success() and fail() |=====| OPTIONAL
+     * @param {HTTP method | String} method GET, POST, PUT, DELETE, ... Default is POST |=====| OPTIONAL
+     * @param {URL | String} url URL of the end. Could be a local file or a URL |=====| REQUIRED
+     * @param {JSON} params parameters, like your post parameters |=====| OPTIONAL
+     * @memberof Agile.core namespace
+     * @returns {Promise}
+    */
+   ajax: function (config) {
+    return new Promise(function (resolve, reject) {
+        config.method = config.method.toUpperCase() || "POST";
+        typeof config.before === "function" ? config.before() : null;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+                if (xmlhttp.status == 200) {
+                    resolve(xmlhttp)
+                }
+                else {
+                    reject(xmlhttp)
+                }
+                typeof config.after === "function" ? config.after(xmlhttp) : null;
+            }
+        };
+        xmlhttp.open(config.method, config.url);
+
+        if (config.params) {
+            if (config.contentType == 'formdata') {
+                xmlhttp.send(config.params);
+            } else {
+                xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                let paramstring = "";
+                for (var key in config.params) {
+                    if (config.params.hasOwnProperty(key)) {
+                        paramstring += key + "=" + config.params[key] + "&";
+                    }
+                }
+                xmlhttp.send(paramstring.substr(0, paramstring.length - 1))
+            }
+        } else {
+            xmlhttp.send();
+        }
+    });
+    },
+    regexPhone: function (string) {
+        return string.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/);
+    },
+    regexFLName: function (string) {
+        return string.match(/([A-Za-z \'])+[ ]+[A-Za-z \']+/g);
+    }
+}
 Agile.crypto = {
     salt: function () {
 
@@ -312,38 +343,19 @@ Agile.emit = {
 
 
 Agile.emit.init();
-Agile.fx.typing = function(text, el, cb, speed = 63) {
-	var arr = text.split("");
-
-	function typing() {
-		if (arr.length > 0) {
-			el.innerHTML += arr.shift();
-			setTimeout(() => {
-				typing();
-			}, speed)
-		} else {
-			if(cb) {
-				cb();
-			}
-		}
-	}
-	typing();
-}
-
+// I have something that works better
 document.addEventListener('DOMContentLoaded', function () {
     /* HOME PAGE Typing effect */
     /*Agile.fx.typing("53% Of users leave your website if it takes longer than 3 seconds to load.", document.querySelector("#header-CTA > h1"), function () {
         console.log('done')
     })*/
 })
-Agile.components.BreadCrumbs = function (root) {
+Agile.components.BreadCrumbs = function (root, config) {
     var self = this;
     this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
+    this.config = config;
 
     self.render();
-
-    Agile.core.bind(self.root, this);
 }
 
 Agile.components.BreadCrumbs.prototype.render = function () {
@@ -377,14 +389,12 @@ Agile.components.BreadCrumbs.prototype.render = function () {
     self.root.innerHTML += crumbs;
 }
 
-Agile.components.Contact = function (root) {
+Agile.components.Contact = function (root, config) {
     var self = this;
     this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
+    this.config = config;
 
     self.render();
-    
-    Agile.core.bind(self.root, this);
 
     self.name = self.root.querySelector('input[name="name"]');
     self.email = self.root.querySelector('input[name="email"]');
@@ -396,8 +406,8 @@ Agile.components.Contact.prototype.render = function() {
 
 
     self.root.innerHTML += `
-        <h2 class="">${self.props.header || "Let's Chat"}</h2>
-        <p class="">${self.props.subtext || ""}</p>
+        <h2 class="">${self.config.header || "Let's Chat"}</h2>
+        <p class="">${self.config.subtext || ""}</p>
         <div>
             <input type="text" placeholder="Name" name="name" required>
             <input type="text" placeholder="Email" name="email" required data-bind="css: fail">
@@ -433,70 +443,57 @@ Agile.components.Contact.prototype.sendEmail = function(e, target) {
  * @description Creates an image gallery from a JSON string containing 2 values - image source and alt. Later on it will allow for image categories which the user will be able to filter through.
  * @param {DOM element} root 
  */
-Agile.components.ImageGallery = function (root) {
+Agile.components.ImageGallery = function (root, config) {
 
     // Internal properties
     var self = this;
     this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
-    this.pagination = 7;
+    this.config = config
+    this.pagination = 9;
     this.paginationIndex = 0;
     this.dataSource = null;
+    this.currentImageIndex = 0;
 
     // Create the markup with events and stuff. Basically the front end setup
     self.render();
 
     // Make references to the DOM nodes only after the render function
-    self.button = self.root.querySelector('button');
     self.imageContainer = self.root.querySelector('[data-images]');
     self.modal = self.root.querySelector('[data-modal]');
     self.modalImage = self.root.querySelector('[data-modal] > div > img');
     self.modalText = self.root.querySelector('[data-modal] > div:last-of-type');
+    self.loadMoreElement = self.root.querySelector('[data-load-more]');
 
     self._displayImages();
-
-    // Bind the functions
-    Agile.core.bind(self.root, this)
 }
 
 Agile.components.ImageGallery.prototype.render = function () {
     var self = this;
 
     self.root.innerHTML += `
-        <div data-modal class="hide" data-bind="click: toggleModal">
+        <div data-modal class="hide">
+            <p data-bind="click: toggleModal" class="toggleModal">╳</p>
             <div>
                 <img class="center" data-bind="click: viewFullResImg">
+            </div>
+            <div>
+                <img src="/assets/components/image-gallery/left-arrow.png" class="left-arrow" data-bind="click: previousImage">
+                <img src="/assets/components/image-gallery/right-arrow.png" class="right-arrow" data-bind="click: nextImage">
             </div>
             <div></div>
         </div>
         <div data-images></div>
-        <button class="forms-button forms-button-full center" data-bind="click: loadMore">Load More</button>
+        <p data-load-more></p>
     `;
 }
 
 Agile.components.ImageGallery.prototype.toggleModal = function (e, target) {
-    target.classList.toggle('hide');
+    var self = this;
+    self.root.querySelector('[data-modal]').classList.toggle('hide');
 }
 
 Agile.components.ImageGallery.prototype.viewFullResImg = function (e, target) {
     window.open(target.src);
-}
-
-Agile.components.ImageGallery.prototype.getImagesFromServer = function (e, target) {
-    Agile.core.ajax({
-        method: "GET",
-        url: "images.json",
-        before: function () {
-            console.log('show loading spinner')
-        },
-        after: function () {
-            console.log('get rid of loading spinner')
-        }
-    }).then(function (response) {
-        _show(JSON.parse(response.response));
-    }).catch(function (err) {
-        console.error("Something went wrong", err);
-    });
 }
 
 Agile.components.ImageGallery.prototype.loadMore = function (e, target) {
@@ -508,27 +505,42 @@ Agile.components.ImageGallery.prototype.loadMore = function (e, target) {
 
 Agile.components.ImageGallery.prototype._showImageInModal = function (e, target) {
     var self = this;
-
+    self.currentImageIndex = target.dataset.index;
     self.modal.classList.toggle('hide');
-    self.modalImage.src = target.src.replace('compressed', 'full');
-    self.modalText.innerHTML = `${target.alt} <br><small>Click image for full resolution</small>`;
+    self.modalImage.src = target.src.replace('min', 'full_res');
+    self.modalText.innerHTML = `<h6>Click image to view full resolution</h6>`;
 }
+
+Agile.components.ImageGallery.prototype.previousImage = function (e, target) {
+    var self = this;
+    if (self.currentImageIndex == 0) {
+        self.currentImageIndex = self.dataSource.length - 1;
+    } else {
+        self.currentImageIndex--;
+    }
+    self.modalImage.src = self.dataSource[self.currentImageIndex].src.replace('min', 'full_res');
+}
+
+Agile.components.ImageGallery.prototype.nextImage = function (e, target) {
+    var self = this;
+    if (self.currentImageIndex == self.dataSource.length - 1) {
+        self.currentImageIndex = 0;
+    } else {
+        self.currentImageIndex++;
+    }
+    self.modalImage.src = self.dataSource[self.currentImageIndex].src.replace('min', 'full_res');
+}
+
+
 
 Agile.components.ImageGallery.prototype._displayImages = function () {
     var self = this;
 
     Agile.core.ajax({
         method: "GET",
-        url: "images.json",
-        parm: self.props,
-        before: function () {
-            //EX: start loading spinner
-        },
-        after: function () {
-            //EX: hide loading spinner
-        }
+        url: self.config.url
     }).then(function (response) {
-        self.dataSource = JSON.parse(response.response)
+        self.dataSource = JSON.parse(response.response);
         _show(self.dataSource);
     }).catch(function (err) {
         console.error("Something went wrong", err);
@@ -537,19 +549,18 @@ Agile.components.ImageGallery.prototype._displayImages = function () {
 
     function _show(source) {
         for (let i = self.pagination * self.paginationIndex; i < (self.pagination * self.paginationIndex) + self.pagination; i++) {
-
-            Agile.core.insertHTML({
-                el: self.imageContainer,
-                html: `
-                    <div>
-                        <img src="" alt="${source.images[i].alt}" class="invisible" data-source="${source.images[i].src}" data-bind="click: _showImageInModal">
-                    </div>
-                `
-            })
-
-            if (i == source.totalRecords - 1) {
-                self.button.parentNode.removeChild(self.button);
+            if (i == source.length) {
+                self.loadMoreElement.remove();
                 break;
+            } else {
+                Agile.core.insertHTML({
+                    el: self.imageContainer,
+                    html: `
+                        <div>
+                            <img src="" alt="${source[i].alt}" class="invisible" data-source="${source[i].src}" data-bind="click: _showImageInModal" data-index="${i}">
+                        </div>
+                    `
+                })
             }
         }
 
@@ -569,31 +580,46 @@ Agile.components.ImageGallery.prototype._displayImages = function () {
                 images[0].src = images[0].dataset.source;
                 images[0].removeAttribute('data-source')
                 images.shift();
+            } else {
+                self.intersectionObserver();
             }
         }
 
         _loadImageAsync();
 
-        Agile.observable.bind(self.root, self)
+        self._rebind();
     }
 }
-Agile.components.NavBar = function (root) {
+
+Agile.components.ImageGallery.prototype.intersectionObserver = function () {
+    var self = this;
+    const intersectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                self.loadMore();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.10 });
+
+    const elements = [...self.root.querySelectorAll('[data-load-more]')];
+    elements.forEach((element) => intersectionObserver.observe(element));
+}
+Agile.components.NavBar = function (root, config) {
     var self = this;
     this.root = root;
-    this.props = JSON.parse(self.root.dataset.props);
+    this.config = config;
 
     self.render();
 
     this.navBar = self.root.querySelector('.nav-standard');
-
-    Agile.core.bind(self.root, this);
 }
 
 Agile.components.NavBar.prototype.render = function() {
     var self = this;
 
     var links = "";
-    self.props.links.forEach(prop => {
+    JSON.parse(self.config.links).forEach(prop => {
         for (key in prop) {
             links += `<a data-bind="click: hrefClick" href="${prop[key]}">${key}</a>`;
         }
