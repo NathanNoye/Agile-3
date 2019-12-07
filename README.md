@@ -58,3 +58,56 @@ PS: our gulp script adds the vendor prefixes
 
 # Temporary Documentation
 Check out the DOC.txt for a basic documentation
+
+# Basics - Creating a component
+1. Create a new folder in the components folder. Name it the same name as your component. (EX: navbar)
+2. create your Less/CSS and your JS files with the same name as the folder (EX: navbar.js & navbar.less). LESS is highly reccomended. If you're adding to the Agile framework component repo - it's required to use LESS.
+3. start your CSS off with [data-component="Navbar"] selector so any component with that attribute will have those styles applied to it.
+4. In your JS - create the constructor and the render function like so:
+```javascript
+Agile.components.NavBar = function (root, config) {
+    var self = this;
+    this.root = root;
+    this.config = config;
+
+    self.render();
+}
+
+Agile.components.NavBar.prototype.render = function() {
+    var self = this;
+    
+    self.root.innerHTML = `
+      markup goes here
+    `;
+}
+```
+5. If you need to add interactivity to your elements - add them to the render function like so:
+```javascript
+Agile.components.NavBar.prototype.render = function() {
+    var self = this;
+
+    self.root.innerHTML = `
+      <button data-bind="click: clickEventTrigger">Click me</button>
+    `;
+}
+
+Agile.components.NavBar.prototype.clickEventTrigger = function(event, target) {
+  var self = this;
+
+  console.log('button clicked', event, target);
+}
+```
+
+The data-bind attribute tells the agile binding module to bind specific functionality to that element. It tells it that on "click" to trigger the "clickEventTrigger" function. It passes in the event and the target element that triggered it. You don't have to use only click events, you can pass in any event like you would normally on a "addEventListener" function.
+
+6. To use your component - create a div with the attribute "data-component" equal to the name of your component like how it's spelled in your JS. for example:
+
+&lt;div data-component=&quot;Navbar&quot; data-some-property=&quot;Hello world&quot;&gt;&lt;/div&gt;
+
+You can also pass in configurations on the component by adding additional data attributes. Call them in your JS via the this.config property. In this case, it would look like this:
+
+```javascript
+console.log(this.config.someProperty);
+```
+
+the above code would output "Hello World". This must be called from inside the component though - you can't have any code "floating" around since you wouldn't be able to access it.
