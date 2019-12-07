@@ -62,7 +62,7 @@ Check out the DOC.txt for a basic documentation
 # Basics - Creating a component
 1. Create a new folder in the components folder. Name it the same name as your component. (EX: navbar)
 2. create your Less/CSS and your JS files with the same name as the folder (EX: navbar.js & navbar.less). LESS is highly reccomended. If you're adding to the Agile framework component repo - it's required to use LESS.
-3. start your CSS off with [data-component="Navbar"] selector so any component with that attribute will have those styles applied to it.
+3. start your CSS off with [data-component="NavBar"] selector so any component with that attribute will have those styles applied to it.
 4. In your JS - create the constructor and the render function like so:
 ```javascript
 Agile.components.NavBar = function (root, config) {
@@ -103,7 +103,7 @@ The data-bind attribute tells the agile binding module to bind specific function
 6. To use your component - create a div with the attribute "data-component" equal to the name of your component like how it's spelled in your JS. for example:
 
 ```html
-<div data-component="Navbar" data-some-property="Hello world"></div>
+<div data-component="NavBar" data-some-property="Hello world"></div>
 ```
 
 You can also pass in configurations on the component by adding additional data attributes like the data-some-property seen above. Call them in your JS via the this.config property. In this case, it would look like this:
