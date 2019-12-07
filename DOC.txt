@@ -1,0 +1,92 @@
+=================   CORE  =================
+Agile.core.bind(rootEl, vm) - Binding events to the VM
+    - rootEl    - Root elementent of the component
+    - vm        - The ViewModel / function object
+    ** Any element that contains a "click": "functionName" must have a prototype function with a matching function name.
+    --- Example ---
+    HTML: <button data-bind="click: sendData"></button>
+    JS: Agile.components.SomeVM.prototype.sendData = function (e, target) {
+            // "e" is the event
+            // "target" is the UI element that the function is attached to
+        }
+
+initializeComponents() - Attaches all elements that contain a data-component and intializes them to their corresponding component
+
+
+
+=================   COMMON  =================
+insertHTML(config) - Inserts HTML without rewriting / repainting the DOM / UI
+    - config.where  - beforeend, beforestart, afterend, afterstart
+    - config.el     - The element that should be affects
+    - config.html   - HTML content
+    ** Use this when dynamically adding items that need to be bound
+
+isMobile() - Checks if the navigator / browser is a mobile browser
+
+isPWA() - Checks if the window media display is "standalone"
+
+ADD AJAX DOCUMENTATION
+
+=================   EMIT  =================
+------------   Emitting data   ------------
+
+To start, add "emit-send" or "emit-receive" to a component's properties. In order for this to work, the receiver must have the function signature already on the object as a prototype function. The "sender" must call Agile.emit.call containing 2 things: the function signature (the name) and the data being passed.
+
+Example:
+<div data-component="SearchBar" data-emit-send="textChangedEMIT"></div>
+<div data-component="Text" data-emit-receive="textChangedEMIT"></div>
+
+// This is the event that'll cause the data to be emitted
+Agile.components.SearchBar.prototype.clickEvent = function (e, target) {
+    Agile.emit.call("textChangedEMIT", {"some": "data"});
+}
+
+// This is where the emitted data will end up
+Agile.components.Text.prototype.textChangedEMIT = function ( data ) {
+    // do something with received data
+}
+
+
+=================    FX   =================
+typing() - Typing text effect
+    - id - Element ID
+    - txt - Text to display
+    - speed - speed in milliseconds for the delay between letters
+    - cb - OPTIONAL callback for after text completion
+    - pauseTime - The delay between finishing the text and the callback being executed
+
+    EXAMPLE
+    Agile.fx.typing ("test", "Welcome to my test", 50, () => {
+        Agile.fx.typing ("test", "Now I'll start typing something new");
+    }, 1000);
+
+
+
+
+================= OBSERVE =================
+// OBSERVABLE TEXT - make text update the UI automatically
+    Creating one
+    *  HTML -  <p data-bind="text: variableName"></p>
+    *  JS -    self.variableName.set('Value goes here');
+    *          After using the setter method - the UI will automatically update with the text. 
+    *          ALTERNATIVELY you can pass in an HTML template
+    *          OPTIONALLY you can call a callback upon successful setting
+
+// OBSERVABLE CSS - make a CSS class appear conditionally
+    Creating one
+    *  HTML -  <p data-bind="css: cssClassName"></p>
+    *  JS -    self.cssClassName.check(condition);
+    *          The check function will check if the value is true. If it is, it will pass apply the class. 
+    *          OPTIONALLY you can call a callback if the value is true
+    
+// OBSERVABLE VARIABLE - allow for a callback function if a variable changes 
+    Creating one
+    *  HTML -  NONE
+    *  JS -    this.variable = new Agile.observable.variable(INITIAL_VALUE, function(){})
+    *          Watches for changes to the variable in the setter method. If a change is detected - the callback gets triggered.
+
+// OBSERVABLE ARRAY - allow for a callback function if a variable changes 
+    Creating one
+    *  HTML -  NONE
+    *  JS -    this.variable = new Agile.observable.array(pushFunction(){}, removeFunction(){})
+    *          Watches for changes to the array in the push and remove method. If a change is detected - the callback gets triggered.
