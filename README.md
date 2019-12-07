@@ -102,7 +102,9 @@ The data-bind attribute tells the agile binding module to bind specific function
 
 6. To use your component - create a div with the attribute "data-component" equal to the name of your component like how it's spelled in your JS. for example:
 
-&lt;div data-component=&quot;Navbar&quot; data-some-property=&quot;Hello world&quot;&gt;&lt;/div&gt;
+```html
+<div data-component="Navbar" data-some-property="Hello world"></div>
+```
 
 You can also pass in configurations on the component by adding additional data attributes. Call them in your JS via the this.config property. In this case, it would look like this:
 
