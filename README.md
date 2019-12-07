@@ -106,7 +106,7 @@ The data-bind attribute tells the agile binding module to bind specific function
 <div data-component="Navbar" data-some-property="Hello world"></div>
 ```
 
-You can also pass in configurations on the component by adding additional data attributes. Call them in your JS via the this.config property. In this case, it would look like this:
+You can also pass in configurations on the component by adding additional data attributes like the data-some-property seen above. Call them in your JS via the this.config property. In this case, it would look like this:
 
 ```javascript
 console.log(this.config.someProperty);
