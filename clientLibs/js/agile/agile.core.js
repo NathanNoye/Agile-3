@@ -14,21 +14,40 @@ Agile.core = {
         * @param {vm} View Model you're attaching to
         */
        bind: function (rootEl, vm) {
+
+        console.log(rootEl);
+
+        if (rootEl.querySelectorAll('[data-component]').length > 0) {
+            rootEl.querySelectorAll('[data-component]').forEach(el => {
+                Agile.core.initSingleComponent(el);
+            });
+        }
+
         [].slice.call(rootEl.querySelectorAll('[data-bind]')).forEach(el => {
+            // * Getting all the events attached to the component * //
             var events = el.getAttribute('data-bind').split(',');
             events.forEach(event => {
                 var _eventType = event.split(':')[0].replace(' ', '').toLowerCase();
                 var fn = event.split(':')[1].replace(' ', '').toString();
+
+                // * This is for observable text * //
                 if (_eventType === 'text') {
                     vm[fn] = new Agile.observable.text(el);
                 }
+
+                // * This is for observable css class * //
                 if (_eventType === 'css') {
                     vm[fn] = new Agile.observable.class(el, fn);
                 }
+
+
                 el.addEventListener(_eventType, function (e) {
+
+                    // * An array in case we add more event types * //
                     if (["click"].includes(_eventType)) {
                         e.preventDefault();
                     }
+
                     try {
                         vm[fn](e, el);
                     } catch (err) {
@@ -57,6 +76,21 @@ Agile.core = {
 
         });
     },
+    /**
+     * 
+     * @param {String} key intializes single component based on the elements passed in.
+     */
+    initSingleComponent: function (key) {
+        let props = JSON.parse(JSON.stringify(key.dataset));
+        let newComponent = new Agile.components[key.getAttribute('data-component')](key, props);
+        newComponent["_rebind"] = () => { Agile.core.bind(key, newComponent); }
+        Agile.core.VM_LIST.push(newComponent);
+        Agile.core.bind(key, newComponent);
+        let attrArr = [].slice.call(key.attributes)
+        for ( let i = 1; i < attrArr.length; i++) {
+            key.removeAttribute(attrArr[i].name)
+        }
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -97,7 +97,7 @@ Agile.components.ImageGallery.prototype.nextImage = function (e, target) {
 Agile.components.ImageGallery.prototype._displayImages = function () {
     var self = this;
 
-    Agile.core.ajax({
+    Agile.common.ajax({
         method: "GET",
         url: self.config.url
     }).then(function (response) {
@@ -114,7 +114,7 @@ Agile.components.ImageGallery.prototype._displayImages = function () {
                 self.loadMoreElement.remove();
                 break;
             } else {
-                Agile.core.insertHTML({
+                Agile.common.insertHTML({
                     el: self.imageContainer,
                     html: `
                         <div>
@@ -143,12 +143,11 @@ Agile.components.ImageGallery.prototype._displayImages = function () {
                 images.shift();
             } else {
                 self.intersectionObserver();
+                self._rebind();
             }
         }
 
         _loadImageAsync();
-
-        self._rebind();
     }
 }
 

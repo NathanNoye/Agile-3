@@ -14,21 +14,40 @@ Agile.core = {
         * @param {vm} View Model you're attaching to
         */
        bind: function (rootEl, vm) {
+
+        console.log(rootEl);
+
+        if (rootEl.querySelectorAll('[data-component]').length > 0) {
+            rootEl.querySelectorAll('[data-component]').forEach(el => {
+                Agile.core.initSingleComponent(el);
+            });
+        }
+
         [].slice.call(rootEl.querySelectorAll('[data-bind]')).forEach(el => {
+            // * Getting all the events attached to the component * //
             var events = el.getAttribute('data-bind').split(',');
             events.forEach(event => {
                 var _eventType = event.split(':')[0].replace(' ', '').toLowerCase();
                 var fn = event.split(':')[1].replace(' ', '').toString();
+
+                // * This is for observable text * //
                 if (_eventType === 'text') {
                     vm[fn] = new Agile.observable.text(el);
                 }
+
+                // * This is for observable css class * //
                 if (_eventType === 'css') {
                     vm[fn] = new Agile.observable.class(el, fn);
                 }
+
+
                 el.addEventListener(_eventType, function (e) {
+
+                    // * An array in case we add more event types * //
                     if (["click"].includes(_eventType)) {
                         e.preventDefault();
                     }
+
                     try {
                         vm[fn](e, el);
                     } catch (err) {
@@ -57,6 +76,21 @@ Agile.core = {
 
         });
     },
+    /**
+     * 
+     * @param {String} key intializes single component based on the elements passed in.
+     */
+    initSingleComponent: function (key) {
+        let props = JSON.parse(JSON.stringify(key.dataset));
+        let newComponent = new Agile.components[key.getAttribute('data-component')](key, props);
+        newComponent["_rebind"] = () => { Agile.core.bind(key, newComponent); }
+        Agile.core.VM_LIST.push(newComponent);
+        Agile.core.bind(key, newComponent);
+        let attrArr = [].slice.call(key.attributes)
+        for ( let i = 1; i < attrArr.length; i++) {
+            key.removeAttribute(attrArr[i].name)
+        }
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -305,24 +339,6 @@ Agile.crypto = {
     }
 }
 Agile.emit = {
-    init: function () {
-        [].slice.call(document.querySelectorAll('[data-props*="emit-send"]')).forEach(emitter => {
-            Agile.emit.emitters.push({
-                element: emitter,
-                function: JSON.parse(emitter.getAttribute('data-props'))["emit-send"]
-            });
-        });
-
-        [].slice.call(document.querySelectorAll('[data-props*="emit-receive"]')).forEach(receiver => {
-            Agile.emit.receivers.push({
-                element: receiver,
-                function: JSON.parse(receiver.getAttribute('data-props'))["emit-receive"]
-            })
-        });
-
-    },
-    emitters: [],
-    receivers: [],
     /**
      * @description Executes a function on a specific component with a matching emit-receiver signature. 
      * STEP 1: Loops through all the VMs looking for a property that contains a matching signature for the emit-receive.
@@ -331,18 +347,13 @@ Agile.emit = {
      * @param {json} data 
      */
     call: function (signature, data) {
-
         Agile.core.VM_LIST.forEach(vm => {
-            if(vm.props["emit-receive"] == signature) {
+            if(vm.config.emitReceive == signature) {
                 vm[signature](data);
             }
         });
-
     }
 }
-
-
-Agile.emit.init();
 // I have something that works better
 document.addEventListener('DOMContentLoaded', function () {
     /* HOME PAGE Typing effect */
@@ -437,6 +448,69 @@ Agile.components.Contact.prototype.sendEmail = function(e, target) {
 }
 
 
+Agile.components.Child = function (root, config) {
+    var self = this;
+    this.root = root;
+    this.config = config;
+
+    self.render();
+}
+
+Agile.components.Child.prototype.render = function () {
+    var self = this;
+
+    self.root.innerHTML = `
+        <button data-bind="click: getProps">Child button</button>
+    `;
+}
+
+Agile.components.Child.prototype.getProps = function () {
+    var self = this;
+
+    console.log("This is the config for the Child component:", self.config);
+}
+
+Agile.components.Child.prototype.sendToChild = function (data) {
+    var self = this;
+
+    console.log("in Child", data);
+}
+Agile.components.NavBar = function (root, config) {
+    var self = this;
+    this.root = root;
+    this.config = config;
+
+    self.render();
+
+    this.navBar = self.root.querySelector('.nav-standard');
+}
+
+Agile.components.NavBar.prototype.render = function() {
+    var self = this;
+
+    var links = "";
+    JSON.parse(self.config.links).forEach(prop => {
+        for (key in prop) {
+            links += `<a data-bind="click: hrefClick" href="${prop[key]}">${key}</a>`;
+        }
+    })
+
+    self.root.innerHTML += `
+        <div class="nav-ham color-accent" data-bind="click: hbMenu">☰</div>
+        <nav class="nav-standard flat-shadow-around-large slide">
+            ${links}
+        </nav>
+    `;
+}
+
+Agile.components.NavBar.prototype.hrefClick = function (e, target) {
+    window.location.href = target.href;
+}
+
+Agile.components.NavBar.prototype.hbMenu = function (e, target) {
+    var self = this;
+    self.navBar.classList.toggle("slide");
+}
 /**
  * @name ImageGallery
  * @author Nate Noye
@@ -536,7 +610,7 @@ Agile.components.ImageGallery.prototype.nextImage = function (e, target) {
 Agile.components.ImageGallery.prototype._displayImages = function () {
     var self = this;
 
-    Agile.core.ajax({
+    Agile.common.ajax({
         method: "GET",
         url: self.config.url
     }).then(function (response) {
@@ -553,7 +627,7 @@ Agile.components.ImageGallery.prototype._displayImages = function () {
                 self.loadMoreElement.remove();
                 break;
             } else {
-                Agile.core.insertHTML({
+                Agile.common.insertHTML({
                     el: self.imageContainer,
                     html: `
                         <div>
@@ -582,12 +656,11 @@ Agile.components.ImageGallery.prototype._displayImages = function () {
                 images.shift();
             } else {
                 self.intersectionObserver();
+                self._rebind();
             }
         }
 
         _loadImageAsync();
-
-        self._rebind();
     }
 }
 
@@ -605,39 +678,139 @@ Agile.components.ImageGallery.prototype.intersectionObserver = function () {
     const elements = [...self.root.querySelectorAll('[data-load-more]')];
     elements.forEach((element) => intersectionObserver.observe(element));
 }
-Agile.components.NavBar = function (root, config) {
+Agile.components.Parent = function (root, config) {
     var self = this;
     this.root = root;
     this.config = config;
 
     self.render();
-
-    this.navBar = self.root.querySelector('.nav-standard');
 }
 
-Agile.components.NavBar.prototype.render = function() {
+Agile.components.Parent.prototype.render = function () {
     var self = this;
 
-    var links = "";
-    JSON.parse(self.config.links).forEach(prop => {
-        for (key in prop) {
-            links += `<a data-bind="click: hrefClick" href="${prop[key]}">${key}</a>`;
-        }
-    })
-
-    self.root.innerHTML += `
-        <div class="nav-ham color-accent" data-bind="click: hbMenu">☰</div>
-        <nav class="nav-standard flat-shadow-around-large slide">
-            ${links}
-        </nav>
+    self.root.innerHTML = `
+        <button data-bind="click: getProps">Parent button</button>
     `;
 }
 
-Agile.components.NavBar.prototype.hrefClick = function (e, target) {
-    window.location.href = target.href;
+Agile.components.Parent.prototype.getProps = function () {
+    var self = this;
+
+    console.log("This is the config for the Parent component:", self.config);
+    Agile.emit.call("sendToChild", {"test": "fromParent"})
+}
+Agile.components.RTE = function (root, config) {
+    var self = this;
+    this.root = root;
+    this.config = config;
+
+    // * This stores the content of the RTE
+    this.content = "";
+
+    // * State management
+    this.state = new Agile.observable.variable('INIT', function () {
+        console.log('State changed:', self.state.get());
+    })
+
+    self.render();
+
+    this.iframe = self.root.querySelector('iframe');
+
+    self.init();
 }
 
-Agile.components.NavBar.prototype.hbMenu = function (e, target) {
+Agile.components.RTE.prototype.render = function() {
     var self = this;
-    self.navBar.classList.toggle("slide");
+
+    self.root.innerHTML += `
+        <div>
+            <button data-bind="click: bold">B</button>
+            <button data-bind="click: italic">I</button>
+            <button data-bind="click: underline">U</button>
+            &nbsp;
+            <button data-bind="click: leftAlign">L</button>
+            <button data-bind="click: centerAlign">C</button>
+            <button data-bind="click: rightAlign">R</button>
+            &nbsp;
+            <select data-bind="change: formatText">
+                <option disabled selected>-- Select style --</option>
+                <option value="H1">H1</option>
+                <option value="H2">H2</option>
+                <option value="H3">H3</option>
+                <option value="H4">H4</option>
+                <option value="H5">H5</option>
+                <option value="H6">H6</option>
+                <option value="P">P</option>
+            </select>
+            &nbsp;
+            <button data-bind="click: createLink">R</button>
+        </div>
+        <iframe></iframe>
+    `;
+}
+
+Agile.components.RTE.prototype.init = function () {
+    var self = this;
+
+    var cssLink = document.createElement("link");
+    cssLink.href = "prod/main-min.css"; 
+    cssLink.rel = "stylesheet"; 
+    cssLink.type = "text/css"; 
+    self.iframe.contentDocument.head.appendChild(cssLink);
+
+    self.iframe.contentDocument.designMode = 'On';
+    self.state.set('Design mode on');
+}
+
+Agile.components.RTE.prototype._execCommand = function (command) {
+    var self = this;
+    self.iframe.contentDocument.execCommand(command, false, null);
+    self.iframe.contentWindow.document.body.focus();
+}
+
+Agile.components.RTE.prototype._execCommandWithArg = function (command, arg) {
+    var self = this;
+    self.iframe.contentDocument.execCommand(command, false, arg);
+    self.iframe.contentWindow.document.body.focus();
+}
+
+Agile.components.RTE.prototype.bold = function (e, t) {
+    var self = this;
+    self._execCommand('bold');
+}
+
+Agile.components.RTE.prototype.italic = function (e, t) {
+    var self = this;
+    self._execCommand('italic');
+}
+
+Agile.components.RTE.prototype.underline = function (e, t) {
+    var self = this;
+    self._execCommand('underline');
+}
+
+Agile.components.RTE.prototype.leftAlign = function (e, t) {
+    var self = this;
+    self._execCommand('justifyLeft');
+}
+
+Agile.components.RTE.prototype.centerAlign = function (e, t) {
+    var self = this;
+    self._execCommand('justifyCenter');
+}
+
+Agile.components.RTE.prototype.rightAlign = function (e, t) {
+    var self = this;
+    self._execCommand('justifyRight');
+}
+
+Agile.components.RTE.prototype.formatText = function (e, t) {
+    var self = this;
+    self._execCommandWithArg('formatBlock', t.value);
+}
+
+Agile.components.RTE.prototype.createLink = function (e, t) {
+    var self = this;
+    self._execCommandWithArg('createLink', prompt('Enter URL: ', 'http://'));
 }
