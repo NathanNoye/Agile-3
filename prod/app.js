@@ -354,13 +354,39 @@ Agile.emit = {
         });
     }
 }
-// I have something that works better
+Agile.fx = {
+    /**
+     * 
+     * @param {Element ID} id 
+     * @param {String} txt text to display
+     * @param {Int} speed speed in milliseconds for the delay between letters
+     * @param {Function} cb OPTIONAL callback for after text completion
+     * @param {Int} pauseTime The delay between finishing the text and the callback being executed
+     */
+    typing: function(id, txt, speed = 50, cb, pauseTime = 0) {
+        document.getElementById(id).innerHTML = null;
+        var i = 0;
+    
+        function typeWriter() {
+            if (i < txt.length) {
+                document.getElementById(id).innerHTML += txt.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            } else {
+                if (typeof cb === 'function') {
+                    setTimeout(() => {
+                        cb(txt, speed, cb);
+                    }, pauseTime);
+                }
+            }
+        }
+    
+        typeWriter();
+    }
+}
 document.addEventListener('DOMContentLoaded', function () {
-    /* HOME PAGE Typing effect */
-    /*Agile.fx.typing("53% Of users leave your website if it takes longer than 3 seconds to load.", document.querySelector("#header-CTA > h1"), function () {
-        console.log('done')
-    })*/
-})
+    
+});
 Agile.components.BreadCrumbs = function (root, config) {
     var self = this;
     this.root = root;
