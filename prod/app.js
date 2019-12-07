@@ -448,69 +448,6 @@ Agile.components.Contact.prototype.sendEmail = function(e, target) {
 }
 
 
-Agile.components.Child = function (root, config) {
-    var self = this;
-    this.root = root;
-    this.config = config;
-
-    self.render();
-}
-
-Agile.components.Child.prototype.render = function () {
-    var self = this;
-
-    self.root.innerHTML = `
-        <button data-bind="click: getProps">Child button</button>
-    `;
-}
-
-Agile.components.Child.prototype.getProps = function () {
-    var self = this;
-
-    console.log("This is the config for the Child component:", self.config);
-}
-
-Agile.components.Child.prototype.sendToChild = function (data) {
-    var self = this;
-
-    console.log("in Child", data);
-}
-Agile.components.NavBar = function (root, config) {
-    var self = this;
-    this.root = root;
-    this.config = config;
-
-    self.render();
-
-    this.navBar = self.root.querySelector('.nav-standard');
-}
-
-Agile.components.NavBar.prototype.render = function() {
-    var self = this;
-
-    var links = "";
-    JSON.parse(self.config.links).forEach(prop => {
-        for (key in prop) {
-            links += `<a data-bind="click: hrefClick" href="${prop[key]}">${key}</a>`;
-        }
-    })
-
-    self.root.innerHTML += `
-        <div class="nav-ham color-accent" data-bind="click: hbMenu">☰</div>
-        <nav class="nav-standard flat-shadow-around-large slide">
-            ${links}
-        </nav>
-    `;
-}
-
-Agile.components.NavBar.prototype.hrefClick = function (e, target) {
-    window.location.href = target.href;
-}
-
-Agile.components.NavBar.prototype.hbMenu = function (e, target) {
-    var self = this;
-    self.navBar.classList.toggle("slide");
-}
 /**
  * @name ImageGallery
  * @author Nate Noye
@@ -678,27 +615,41 @@ Agile.components.ImageGallery.prototype.intersectionObserver = function () {
     const elements = [...self.root.querySelectorAll('[data-load-more]')];
     elements.forEach((element) => intersectionObserver.observe(element));
 }
-Agile.components.Parent = function (root, config) {
+Agile.components.NavBar = function (root, config) {
     var self = this;
     this.root = root;
     this.config = config;
 
     self.render();
+
+    this.navBar = self.root.querySelector('.nav-standard');
 }
 
-Agile.components.Parent.prototype.render = function () {
+Agile.components.NavBar.prototype.render = function() {
     var self = this;
 
-    self.root.innerHTML = `
-        <button data-bind="click: getProps">Parent button</button>
+    var links = "";
+    JSON.parse(self.config.links).forEach(prop => {
+        for (key in prop) {
+            links += `<a data-bind="click: hrefClick" href="${prop[key]}">${key}</a>`;
+        }
+    })
+
+    self.root.innerHTML += `
+        <div class="nav-ham color-accent" data-bind="click: hbMenu">☰</div>
+        <nav class="nav-standard flat-shadow-around-large slide">
+            ${links}
+        </nav>
     `;
 }
 
-Agile.components.Parent.prototype.getProps = function () {
-    var self = this;
+Agile.components.NavBar.prototype.hrefClick = function (e, target) {
+    window.location.href = target.href;
+}
 
-    console.log("This is the config for the Parent component:", self.config);
-    Agile.emit.call("sendToChild", {"test": "fromParent"})
+Agile.components.NavBar.prototype.hbMenu = function (e, target) {
+    var self = this;
+    self.navBar.classList.toggle("slide");
 }
 Agile.components.RTE = function (root, config) {
     var self = this;
