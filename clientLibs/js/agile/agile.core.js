@@ -9,6 +9,7 @@ Agile.common = {} || Agile.common;
 
 Agile.core = {
     VM_LIST: [],
+
     /**
         * @param {rootEl} Root HTML element
         * @param {vm} View Model you're attaching to
@@ -58,6 +59,7 @@ Agile.core = {
             })
         });
     },
+
     /**
      * @description Used to initialize all the components in the Agile.components group
      */
@@ -76,6 +78,7 @@ Agile.core = {
 
         });
     },
+
     /**
      * 
      * @param {String} key intializes single component based on the elements passed in.
@@ -90,7 +93,7 @@ Agile.core = {
         for ( let i = 1; i < attrArr.length; i++) {
             key.removeAttribute(attrArr[i].name)
         }
-    }
+    },
 };
 
 document.addEventListener('DOMContentLoaded', () => {

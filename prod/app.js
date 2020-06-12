@@ -9,6 +9,7 @@ Agile.common = {} || Agile.common;
 
 Agile.core = {
     VM_LIST: [],
+
     /**
         * @param {rootEl} Root HTML element
         * @param {vm} View Model you're attaching to
@@ -58,6 +59,7 @@ Agile.core = {
             })
         });
     },
+
     /**
      * @description Used to initialize all the components in the Agile.components group
      */
@@ -76,6 +78,7 @@ Agile.core = {
 
         });
     },
+
     /**
      * 
      * @param {String} key intializes single component based on the elements passed in.
@@ -90,7 +93,7 @@ Agile.core = {
         for ( let i = 1; i < attrArr.length; i++) {
             key.removeAttribute(attrArr[i].name)
         }
-    }
+    },
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -357,19 +360,19 @@ Agile.emit = {
 Agile.fx = {
     /**
      * 
-     * @param {Element ID} id 
+     * @param {Element} el 
      * @param {String} txt text to display
      * @param {Int} speed speed in milliseconds for the delay between letters
      * @param {Function} cb OPTIONAL callback for after text completion
      * @param {Int} pauseTime The delay between finishing the text and the callback being executed
      */
-    typing: function(id, txt, speed = 50, cb, pauseTime = 0) {
-        document.getElementById(id).innerHTML = null;
+    typing: function(el, txt, speed = 50, cb, pauseTime = 0) {
+        el.innerHTML = null;
         var i = 0;
     
         function typeWriter() {
             if (i < txt.length) {
-                document.getElementById(id).innerHTML += txt.charAt(i);
+                el.innerHTML += txt.charAt(i);
                 i++;
                 setTimeout(typeWriter, speed);
             } else {
@@ -440,8 +443,7 @@ Agile.components.Contact = function (root, config) {
 
 Agile.components.Contact.prototype.render = function() {
     var self = this;
-
-
+    
     self.root.innerHTML += `
         <h2 class="">${self.config.header || "Let's Chat"}</h2>
         <p class="">${self.config.subtext || ""}</p>
@@ -790,4 +792,28 @@ Agile.components.RTE.prototype.formatText = function (e, t) {
 Agile.components.RTE.prototype.createLink = function (e, t) {
     var self = this;
     self._execCommandWithArg('createLink', prompt('Enter URL: ', 'http://'));
+}
+Agile.components.Tabs = function (root, config) {
+    var self = this;
+    this.root = root;
+    this.config = config;
+
+    self.render();
+
+    this.navBar = self.root.querySelector('.nav-standard');
+}
+
+Agile.components.Tabs.prototype.render = function() {
+    var self = this;
+    
+    var tabs = "";
+    self.config.tabs.split(',').forEach((component) => {
+        tabs += `
+            <div class="tab active">
+                <div data-component="${component}"></div>
+            </div>
+        `;
+    })
+
+    self.root.innerHTML += tabs;
 }

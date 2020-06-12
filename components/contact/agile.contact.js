@@ -12,8 +12,7 @@ Agile.components.Contact = function (root, config) {
 
 Agile.components.Contact.prototype.render = function() {
     var self = this;
-
-
+    
     self.root.innerHTML += `
         <h2 class="">${self.config.header || "Let's Chat"}</h2>
         <p class="">${self.config.subtext || ""}</p>
