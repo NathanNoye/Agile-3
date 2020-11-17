@@ -1,0 +1,36 @@
+[data-component="SideGraph"] {
+    width: 100%;
+    min-width: 300px;
+    padding: 12px;
+    background-color: #f5f5f5;
+
+    .bars{
+
+        width: 100%;
+        
+        .bar {
+            display: flex;
+            padding-bottom: 10px;
+
+            .key {
+                display: inline-block;
+                width: 150px;
+            }
+            
+            .value-container {
+                width: calc(100% - 150px); 
+                display: inline-block;
+
+                .value {
+                    display: inline-block;
+                    border-radius: 20px;
+                    text-align: center;
+                    background-color: @accent-color;
+                    color: #fff;
+    
+                    align-self: center;
+                }
+            }
+        }
+    }
+}
